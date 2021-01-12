@@ -21,16 +21,14 @@ var other_enable;
 var sites;
 var usechars;
 
-// load connection
-var connection = chrome.extension.connect();
-connection.onMessage.addListener(function(info, con){
+chrome.runtime.sendMessage({method: 'getConfig'}, {}, (response) => {
+   const info = response;
    search_enable = info.search=="false"?false:true;
    hitahint_enable = info.hitahint=="false"?false:true;
    other_enable = info.other=="false"?false:true;
    usechars = info.hitahintkeys || "asdfjkl";
    sites = (info.sites||"").split(",").slice(0,-1);
 });
-connection.postMessage();
 
 function isDisabledSite() {
    for (var i=0;i<sites.length;i++)

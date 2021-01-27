@@ -382,53 +382,30 @@ function start(e){
          mode.finish();
       return;
    }
-   if (["INPUT", "TEXTAREA"].indexOf(active.tagName) != -1)
-      return;
 
    if (mode)
       return;
-   if (e.metaKey || e.ctrlKey)
-      return;
 
-   switch(e.keyCode) {
-   case KEY.SLASH: case KEY.PERIOD:
+   if (e.key === '<' && e.ctrlKey) {
+      if (!other_enable || isDisabledSite())
+         return;
+      history.back();
+   } else if (e.key === '>' && e.ctrlKey) {
+      if (!other_enable || isDisabledSite())
+         return;
+      history.forward();
+   } else if (e.key === '.' && e.ctrlKey) {
       if (!search_enable || isDisabledSite())
          return;
       e.preventDefault();
       mode = linksearch;
       linksearch.init();
-      break;
-   case KEY.COMMA:
+   } else if (e.key === ',' && e.ctrlKey) {
       if (!hitahint_enable || isDisabledSite())
          return;
       e.preventDefault();
       mode = hitahint;
       hitahint.init();
-      break;
-
-   case KEY.J:
-      if (!other_enable || isDisabledSite())
-         return;
-      window.scrollBy(0,scrollValue);
-      break;
-   case KEY.K:
-      if (!other_enable || isDisabledSite())
-         return;
-      window.scrollBy(0,-scrollValue);
-      break;
-   case KEY.Z:
-      if (!other_enable || isDisabledSite())
-         return;
-      history.back();
-      break;
-   case KEY.X:
-      if (!other_enable || isDisabledSite())
-         return;
-      history.forward();
-      break;
-   default:
-//      console.log(e.keyCode);
-      break;
    }
 }
 

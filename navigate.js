@@ -15,6 +15,7 @@ const KEY = {
 };
 var d = document;
 
+var temporarilyDisabled = false;
 var search_enable;
 var hitahint_enable;
 var other_enable;
@@ -23,11 +24,25 @@ var usechars;
 
 chrome.runtime.sendMessage({method: 'getConfig'}, {}, (response) => {
    const info = response;
+
    search_enable = info.search=="false"?false:true;
    hitahint_enable = info.hitahint=="false"?false:true;
    other_enable = info.other=="false"?false:true;
    usechars = info.hitahintkeys || "asdfjkl";
    sites = (info.sites||"").split(",").slice(0,-1);
+});
+
+chrome.runtime.onMessage.addListener(({method, config}, sender, sendResponse) => {
+   if (method === 'getTabConfig') {
+      sendResponse({
+         temporarilyDisabled: temporarilyDisabled,
+      });
+   } else if (method === 'setTabConfig') {
+      temporarilyDisabled = config.temporarilyDisabled;
+      if (temporarilyDisabled) {
+         finish();
+      }
+   }
 });
 
 function isDisabledSite() {
@@ -372,18 +387,24 @@ $(function(){
 
 var mode = undefined;
 
+function finish() {
+   if (mode)
+   mode.finish();
+}
 
 function start(e){
    var active = document.activeElement;
    if (e.keyCode == KEY.ESC) {
       e.preventDefault();
       active.blur();
-      if (mode)
-         mode.finish();
+      finish();
       return;
    }
 
    if (mode)
+      return;
+
+   if (temporarilyDisabled)
       return;
 
    if (e.key === '<' && e.ctrlKey) {

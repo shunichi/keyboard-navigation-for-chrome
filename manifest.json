@@ -16,5 +16,10 @@
   "name": "Keyboard navigation for Chrome",
   "description": "Hit-a-Hint and migemo link search for Chrome",
   "icons": { "48": "icon48.png",
-             "128": "icon128.png" }
+             "128": "icon128.png" },
+  "browser_action": {
+    "default_title": "Keyboard navigation Config",
+    "default_icon": "icon128.png",
+    "default_popup": "popup.html"
+  }
 }
